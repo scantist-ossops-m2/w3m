@@ -316,6 +316,8 @@ formUpdateBuffer(Anchor *a, Buffer *buf, FormItemList *form)
 	    p = form->value->ptr;
 	j = 0;
 	l = buf->currentLine;
+	if (!l)
+	    break;
 	if (form->type == FORM_TEXTAREA) {
 	    int n = a->y - buf->currentLine->linenumber;
 	    if (n > 0)
