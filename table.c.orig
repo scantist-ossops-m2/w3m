@@ -1711,6 +1711,10 @@ renderTable(struct table *t,
     if (max_width < rulewidth)
 	max_width = rulewidth;
 
+#define MAX_TABWIDTH 10000
+    if (max_width > MAX_TABWIDTH)
+	max_width = MAX_TABWIDTH;
+
     check_maximum_width(t);
 
 #ifdef MATRIX
