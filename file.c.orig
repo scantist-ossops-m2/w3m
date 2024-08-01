@@ -4610,13 +4610,13 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
 #ifdef USE_IMAGE
 	i = 0;
 	if (parsedtag_get_value(tag, ATTR_TOP_MARGIN, &i)) {
-	    if (i > obuf->top_margin)
-		obuf->top_margin = i;
+	    if ((short)i > obuf->top_margin)
+		obuf->top_margin = (short)i;
 	}
 	i = 0;
 	if (parsedtag_get_value(tag, ATTR_BOTTOM_MARGIN, &i)) {
-	    if (i > obuf->bottom_margin)
-		obuf->bottom_margin = i;
+	    if ((short)i > obuf->bottom_margin)
+		obuf->bottom_margin = (short)i;
 	}
 #endif
 	return 0;
@@ -4630,13 +4630,13 @@ HTMLtagproc1(struct parsed_tag *tag, struct html_feed_environ *h_env)
     case HTML_INPUT_ALT:
 	i = 0;
 	if (parsedtag_get_value(tag, ATTR_TOP_MARGIN, &i)) {
-	    if (i > obuf->top_margin)
-		obuf->top_margin = i;
+	    if ((short)i > obuf->top_margin)
+		obuf->top_margin = (short)i;
 	}
 	i = 0;
 	if (parsedtag_get_value(tag, ATTR_BOTTOM_MARGIN, &i)) {
-	    if (i > obuf->bottom_margin)
-		obuf->bottom_margin = i;
+	    if ((short)i > obuf->bottom_margin)
+		obuf->bottom_margin = (short)i;
 	}
 	return 0;
     case HTML_TABLE:
