@@ -10,8 +10,10 @@
 #include "regex.h"
 
 extern Str *textarea_str;
+extern int max_textarea;
 #ifdef MENU_SELECT
 extern FormSelectOption *select_option;
+extern int max_select;
 #include "menu.h"
 #endif				/* MENU_SELECT */
 
@@ -122,10 +124,12 @@ formList_addInput(struct form_list *fl, struct parsed_tag *tag)
     parsedtag_get_value(tag, ATTR_SIZE, &item->size);
     parsedtag_get_value(tag, ATTR_MAXLENGTH, &item->maxlength);
     item->readonly = parsedtag_exists(tag, ATTR_READONLY);
-    if (parsedtag_get_value(tag, ATTR_TEXTAREANUMBER, &i))
+    if (parsedtag_get_value(tag, ATTR_TEXTAREANUMBER, &i)
+	&& i >= 0 && i < max_textarea)
 	item->value = item->init_value = textarea_str[i];
 #ifdef MENU_SELECT
-    if (parsedtag_get_value(tag, ATTR_SELECTNUMBER, &i))
+    if (parsedtag_get_value(tag, ATTR_SELECTNUMBER, &i)
+	&& i >= 0 && i < max_select)
 	item->select_option = select_option[i].first;
 #endif				/* MENU_SELECT */
     if (parsedtag_get_value(tag, ATTR_ROWS, &p))
@@ -438,6 +442,9 @@ formUpdateBuffer(Anchor *a, Buffer *buf, FormItemList *form)
     switch (form->type) {
     case FORM_INPUT_CHECKBOX:
     case FORM_INPUT_RADIO:
+	if (buf->currentLine == NULL ||
+	    spos >= buf->currentLine->len || spos < 0)
+	    break;
 	if (form->checked)
 	    buf->currentLine->lineBuf[spos] = '*';
 	else
@@ -455,8 +462,14 @@ formUpdateBuffer(Anchor *a, Buffer *buf, FormItemList *form)
 	}
 	else
 #endif				/* MENU_SELECT */
+	{
+	    if (!form->value)
+		break;
 	    p = form->value->ptr;
+	}
 	l = buf->currentLine;
+	if (!l)
+	    break;
 	if (form->type == FORM_TEXTAREA) {
 	    int n = a->y - buf->currentLine->linenumber;
 	    if (n > 0)
@@ -469,6 +482,8 @@ formUpdateBuffer(Anchor *a, Buffer *buf, FormItemList *form)
 	rows = form->rows ? form->rows : 1;
 	col = COLPOS(l, a->start.pos);
 	for (c_rows = 0; c_rows < rows; c_rows++, l = l->next) {
+	    if (l == NULL)
+		break;
 	    if (rows > 1) {
 		pos = columnPos(l, col);
 		a = retrieveAnchor(buf->formitem, l->linenumber, pos);
@@ -477,6 +492,8 @@ formUpdateBuffer(Anchor *a, Buffer *buf, FormItemList *form)
 		spos = a->start.pos;
 		epos = a->end.pos;
 	    }
+	    if (a->start.line != a->end.line || spos > epos || epos >= l->len || spos < 0 || epos < 0)
+		break;
 	    pos = form_update_line(l, &p, spos, epos, COLPOS(l, epos) - col,
 				   rows > 1,
 				   form->type == FORM_INPUT_PASSWORD);
