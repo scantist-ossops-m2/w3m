@@ -3129,6 +3129,17 @@ process_input(struct parsed_tag *tag)
 	break;
     }
 
+    switch (v) {
+    case FORM_INPUT_SUBMIT:
+    case FORM_INPUT_BUTTON:
+    case FORM_INPUT_RESET:
+	break;
+    default:
+	p = "submit";
+	v = FORM_INPUT_SUBMIT;
+	break;
+    }
+
     if (!q) {
 	switch (v) {
 	case FORM_INPUT_IMAGE:
