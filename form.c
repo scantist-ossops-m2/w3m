@@ -458,6 +458,8 @@ formUpdateBuffer(Anchor *a, Buffer *buf, FormItemList *form)
 	}
 	else
 #endif				/* MENU_SELECT */
+	    if (!form->value)
+		break;
 	    p = form->value->ptr;
 	l = buf->currentLine;
 	if (!l)
